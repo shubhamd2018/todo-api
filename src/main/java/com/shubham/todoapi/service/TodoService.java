@@ -1,8 +1,10 @@
 package com.shubham.todoapi.service;
 
-import com.shubham.todoapi.dto.CreateTodoRequest;
-import com.shubham.todoapi.dto.TodoResponse;
+import com.shubham.todoapi.dto.request.CreateTodoRequest;
+import com.shubham.todoapi.dto.request.UpdateTodoRequest;
+import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.entity.Todo;
+import com.shubham.todoapi.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,7 +12,11 @@ import java.util.List;
 
 @Service
 public class TodoService {
-    private final List<Todo> todos = new ArrayList<>();
+
+    private final TodoRepository todoRepository;
+    public TodoService(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
     private TodoResponse mapToResponse(Todo todo) {
         return new TodoResponse(
@@ -20,12 +26,8 @@ public class TodoService {
         );
     }
 
-    public TodoService() {
-        todos.add(new Todo(1L, "Learn Spring Boot", false));
-        todos.add(new Todo(2L, "Build Todo API", false));
-    }
-
-    public List<TodoResponse> getAllTodos(){
+    public List<TodoResponse> getAllTodos() {
+        List<Todo> todos = todoRepository.findAll();
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
             response.add(mapToResponse(todo));
@@ -33,19 +35,23 @@ public class TodoService {
         return response;
     }
 
-    public TodoResponse getTodo(Long id){
-        for (Todo todo : todos) {
-            if (todo.getId().equals(id)) {
-                return mapToResponse(todo);
-            }
+    public TodoResponse getTodo(Long id) {
+        Todo todo = todoRepository.findById(id).orElse(null);
+        if (todo == null) {
+            return null;
         }
-        return null;
+        return mapToResponse(todo);
     }
 
     public TodoResponse createTodo(CreateTodoRequest request) {
-        Long id = (long) (todos.size() + 1);
-        Todo todo = new Todo(id, request.getTitle(), false);
-        todos.add(todo);
-        return mapToResponse(todo);
+        Todo todo = new Todo();
+        todo.setTitle(request.getTitle());
+        todo.setCompleted(false);
+        Todo savedTodo = todoRepository.save(todo);
+        return mapToResponse(savedTodo);
+    }
+
+    public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
+
     }
 }

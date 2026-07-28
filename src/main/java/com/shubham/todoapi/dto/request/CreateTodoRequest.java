@@ -1,4 +1,4 @@
-package com.shubham.todoapi.dto;
+package com.shubham.todoapi.dto.request;
 
 public class CreateTodoRequest {
     private String title;

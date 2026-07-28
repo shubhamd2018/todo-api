@@ -1,4 +1,4 @@
-package com.shubham.todoapi.dto;
+package com.shubham.todoapi.dto.response;
 
 public class TodoResponse {
     private Long id;
