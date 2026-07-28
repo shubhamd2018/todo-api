@@ -1,5 +1,6 @@
 package com.shubham.todoapi.service;
 
+import com.shubham.todoapi.dto.CreateTodoRequest;
 import com.shubham.todoapi.model.Todo;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,14 @@ public class TodoService {
         todos.add(new Todo(2L, "Build Todo API", false));
     }
 
-    public List<Todo> getAllTodos() {
+    public List<Todo> getAllTodos(){
         return todos;
+    }
+
+    public Todo createTodo(CreateTodoRequest request) {
+        Long id = (long) (todos.size() + 1);
+        Todo todo = new Todo(id, request.getTitle(), false);
+        todos.add(todo);
+        return todo;
     }
 }
