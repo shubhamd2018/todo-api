@@ -3,14 +3,12 @@ package com.shubham.todoapi.controller;
 import com.shubham.todoapi.dto.CreateTodoRequest;
 import com.shubham.todoapi.model.Todo;
 import com.shubham.todoapi.service.TodoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/todos")
 public class TodoController {
     private final TodoService todoService;
 
@@ -18,13 +16,18 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    @GetMapping("/todos")
+    @GetMapping
     public List<Todo> getTodos(){
         return todoService.getAllTodos();
     }
 
-    @PostMapping("/todos")
+    @PostMapping
     public Todo createTodo(@RequestBody CreateTodoRequest request){
         return todoService.createTodo(request);
+    }
+
+    @GetMapping("/{id}")
+    public Todo getTodo(@PathVariable Long id){
+        return todoService.getTodo(id);
     }
 }

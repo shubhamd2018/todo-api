@@ -20,6 +20,15 @@ public class TodoService {
         return todos;
     }
 
+    public Todo getTodo(Long id){
+        for (Todo todo : todos) {
+            if (todo.getId().equals(id)) {
+                return todo;
+            }
+        }
+        return null;
+    }
+
     public Todo createTodo(CreateTodoRequest request) {
         Long id = (long) (todos.size() + 1);
         Todo todo = new Todo(id, request.getTitle(), false);
