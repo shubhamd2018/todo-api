@@ -2,7 +2,7 @@ package com.shubham.todoapi.service;
 
 import com.shubham.todoapi.dto.CreateTodoRequest;
 import com.shubham.todoapi.dto.TodoResponse;
-import com.shubham.todoapi.model.Todo;
+import com.shubham.todoapi.entity.Todo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,6 +1,13 @@
-package com.shubham.todoapi.model;
+package com.shubham.todoapi.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "todos")
 public class Todo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private boolean completed;
