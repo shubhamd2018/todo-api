@@ -4,6 +4,7 @@ import com.shubham.todoapi.dto.request.CreateTodoRequest;
 import com.shubham.todoapi.dto.request.UpdateTodoRequest;
 import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.entity.Todo;
+import com.shubham.todoapi.exception.TodoNotFoundException;
 import com.shubham.todoapi.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +37,8 @@ public class TodoService {
     }
 
     public TodoResponse getTodo(Long id) {
-        Todo todo = todoRepository.findById(id).orElse(null);
-        if (todo == null) {
-            return null;
-        }
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new TodoNotFoundException(id));
         return mapToResponse(todo);
     }
 
@@ -52,6 +51,11 @@ public class TodoService {
     }
 
     public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
-
+        Todo todo = todoRepository.findById(id)
+                        .orElseThrow(() -> new TodoNotFoundException(id));
+        todo.setTitle(request.getTitle());
+        todo.setCompleted(request.isCompleted());
+        Todo updatedTodo = todoRepository.save(todo);
+        return mapToResponse(updatedTodo);
     }
 }
