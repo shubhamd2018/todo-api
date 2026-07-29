@@ -6,6 +6,10 @@ import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.entity.Todo;
 import com.shubham.todoapi.exception.TodoNotFoundException;
 import com.shubham.todoapi.repository.TodoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +88,21 @@ public class TodoService {
             response.add(mapToResponse(todo));
         }
         return response;
+    }
+
+    public List<TodoResponse> searchTodosByTitle(String keyword) {
+        List<Todo> todos = todoRepository.searchByTitle(keyword);
+        List<TodoResponse> response = new ArrayList<>();
+        for (Todo todo : todos) {
+            response.add(mapToResponse(todo));
+        }
+        return response;
+    }
+
+    public Page<TodoResponse> getTodos(int page, int size, String sortBy) {
+        Sort sort = Sort.by(sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Todo> todoPage = todoRepository.findAll(pageable);
+        return todoPage.map(this::mapToResponse);
     }
 }

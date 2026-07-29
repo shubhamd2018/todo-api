@@ -5,6 +5,7 @@ import com.shubham.todoapi.dto.request.UpdateTodoRequest;
 import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.service.TodoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +56,14 @@ public class TodoController {
         return todoService.getTodosByTitle(title);
     }
 
+    @GetMapping("/search/title")
+    public List<TodoResponse> searchTodosByTitle(@RequestParam String keyword) {
+        return todoService.searchTodosByTitle(keyword);
+    }
+
+    @GetMapping("/page")
+    public Page<TodoResponse> getTodos(@RequestParam int page, @RequestParam int size, @RequestParam(defaultValue = "id") String sortBy) {
+        return todoService.getTodos(page, size, sortBy);
+    }
 
 }
