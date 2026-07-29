@@ -7,6 +7,7 @@ import com.shubham.todoapi.entity.Todo;
 import com.shubham.todoapi.exception.TodoNotFoundException;
 import com.shubham.todoapi.repository.TodoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +51,14 @@ public class TodoService {
         return mapToResponse(savedTodo);
     }
 
+    @Transactional
     public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
         Todo todo = todoRepository.findById(id)
                         .orElseThrow(() -> new TodoNotFoundException(id));
         todo.setTitle(request.getTitle());
         todo.setCompleted(request.isCompleted());
-        Todo updatedTodo = todoRepository.save(todo);
-        return mapToResponse(updatedTodo);
+        //Todo updatedTodo = todoRepository.save(todo);
+        return mapToResponse(todoRepository.save(todo));
     }
 
     public void deleteTodo(Long id) {
