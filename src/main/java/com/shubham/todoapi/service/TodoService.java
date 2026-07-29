@@ -58,4 +58,11 @@ public class TodoService {
         Todo updatedTodo = todoRepository.save(todo);
         return mapToResponse(updatedTodo);
     }
+
+    public void deleteTodo(Long id) {
+        if (!todoRepository.existsById(id)) {
+            throw new TodoNotFoundException(id);
+        }
+        todoRepository.deleteById(id);
+    }
 }
