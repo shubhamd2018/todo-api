@@ -4,8 +4,11 @@ import com.shubham.todoapi.dto.request.CreateTodoRequest;
 import com.shubham.todoapi.dto.request.UpdateTodoRequest;
 import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.entity.Todo;
+import com.shubham.todoapi.entity.User;
 import com.shubham.todoapi.exception.TodoNotFoundException;
+import com.shubham.todoapi.exception.UserNotFoundException;
 import com.shubham.todoapi.repository.TodoRepository;
+import com.shubham.todoapi.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +23,11 @@ import java.util.List;
 public class TodoService {
 
     private final TodoRepository todoRepository;
-    public TodoService(TodoRepository todoRepository) {
+    private final UserRepository userRepository;
+
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
 
     private TodoResponse mapToResponse(Todo todo) {
@@ -48,9 +54,14 @@ public class TodoService {
     }
 
     public TodoResponse createTodo(CreateTodoRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() ->
+                        new UserNotFoundException(request.getUserId()));
+
         Todo todo = new Todo();
         todo.setTitle(request.getTitle());
         todo.setCompleted(false);
+        todo.setUser(user);
         Todo savedTodo = todoRepository.save(todo);
         return mapToResponse(savedTodo);
     }
