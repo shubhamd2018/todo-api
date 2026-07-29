@@ -34,12 +34,13 @@ public class TodoService {
         return new TodoResponse(
                 todo.getId(),
                 todo.getTitle(),
-                todo.isCompleted()
+                todo.isCompleted(),
+                todo.getUser().getName()
         );
     }
 
     public List<TodoResponse> getAllTodos() {
-        List<Todo> todos = todoRepository.findAll();
+        List<Todo> todos = todoRepository.findAllWithUser();
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
             response.add(mapToResponse(todo));

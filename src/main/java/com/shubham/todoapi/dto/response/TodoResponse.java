@@ -10,8 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TodoResponse {
+
     private Long id;
     private String title;
     private boolean completed;
+    private String userName;
 
 }

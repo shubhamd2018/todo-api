@@ -18,5 +18,12 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
        WHERE LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
        """)
     List<Todo> searchByTitle(@Param("keyword") String keyword);
+
+    @Query("""
+    SELECT t
+    FROM Todo t
+    JOIN FETCH t.user
+    """)
+    List<Todo> findAllWithUser();
 }
 
