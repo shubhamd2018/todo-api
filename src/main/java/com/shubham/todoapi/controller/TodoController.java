@@ -44,4 +44,16 @@ public class TodoController {
         todoService.deleteTodo(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/search", params = "completed")
+    public List<TodoResponse> getTodosByCompleted(@RequestParam boolean completed) {
+        return todoService.getTodosByCompleted(completed);
+    }
+
+    @GetMapping(value = "/search", params = "title")
+    public List<TodoResponse> getTodosByTitle(@RequestParam String title) {
+        return todoService.getTodosByTitle(title);
+    }
+
+
 }

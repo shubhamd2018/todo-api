@@ -65,4 +65,22 @@ public class TodoService {
         }
         todoRepository.deleteById(id);
     }
+
+    public List<TodoResponse> getTodosByCompleted(boolean completed) {
+        List<Todo> todos = todoRepository.findByCompleted(completed);
+        List<TodoResponse> response = new ArrayList<>();
+        for (Todo todo : todos) {
+            response.add(mapToResponse(todo));
+        }
+        return response;
+    }
+
+    public List<TodoResponse> getTodosByTitle(String title) {
+        List<Todo> todos = todoRepository.findByTitleContainingIgnoreCase(title);
+        List<TodoResponse> response = new ArrayList<>();
+        for (Todo todo : todos) {
+            response.add(mapToResponse(todo));
+        }
+        return response;
+    }
 }
