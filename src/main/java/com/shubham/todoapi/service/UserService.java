@@ -1,6 +1,7 @@
 package com.shubham.todoapi.service;
 
 import com.shubham.todoapi.dto.request.CreateUserRequest;
+import com.shubham.todoapi.dto.request.UpdateUserRequest;
 import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.dto.response.UserResponse;
 import com.shubham.todoapi.entity.Todo;
@@ -9,6 +10,7 @@ import com.shubham.todoapi.exception.UserNotFoundException;
 import com.shubham.todoapi.mapper.TodoMapper;
 import com.shubham.todoapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,5 +78,14 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public void updateUser(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
     }
 }
