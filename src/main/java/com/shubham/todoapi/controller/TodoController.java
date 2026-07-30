@@ -20,10 +20,10 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    @GetMapping
-    public List<TodoResponse> getTodos(){
-        return todoService.getAllTodos();
-    }
+    //@GetMapping
+    //public List<TodoResponse> getTodos(){
+//        return todoService.getAllTodos();
+//    }
 
     @PostMapping
     public TodoResponse createTodo(@Valid @RequestBody CreateTodoRequest request){
@@ -69,6 +69,11 @@ public class TodoController {
     @PatchMapping("/{id}/complete")
     public TodoResponse completeTodo(@PathVariable Long id) {
         return todoService.completeTodo(id);
+    }
+
+    @GetMapping
+    public List<TodoResponse> getTodosByCompletedDynamically(@RequestParam(required = false) Boolean completed) {
+        return todoService.getTodosByCompletedDynamically(completed);
     }
 
 }

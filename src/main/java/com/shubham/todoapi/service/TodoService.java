@@ -122,4 +122,16 @@ public class TodoService {
         return todoMapper.mapToResponse(todo);
     }
 
+    public List<TodoResponse> getTodosByCompletedDynamically(Boolean completed){
+        List<Todo> todos;
+        if (completed == null) {
+            todos = todoRepository.findAll();
+        } else {
+            todos = todoRepository.findByCompleted(completed);
+        }
+        return todos.stream()
+                .map(todoMapper::mapToResponse)
+                .toList();
+    }
+
 }
