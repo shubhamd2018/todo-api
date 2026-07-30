@@ -74,7 +74,7 @@ public class TodoService {
         todo.setTitle(request.getTitle());
         todo.setCompleted(request.isCompleted());
         //Todo updatedTodo = todoRepository.save(todo);
-        return mapToResponse(todoRepository.save(todo));
+        return mapToResponse(todo);
     }
 
     public void deleteTodo(Long id) {
@@ -116,5 +116,15 @@ public class TodoService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Todo> todoPage = todoRepository.findAll(pageable);
         return todoPage.map(this::mapToResponse);
+    }
+
+    @Transactional
+    public TodoResponse completeTodo(Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() ->
+                        new TodoNotFoundException(id));
+
+        todo.setCompleted(true);
+        return mapToResponse(todo);
     }
 }

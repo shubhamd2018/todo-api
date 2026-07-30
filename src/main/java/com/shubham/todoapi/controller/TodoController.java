@@ -66,4 +66,9 @@ public class TodoController {
         return todoService.getTodos(page, size, sortBy);
     }
 
+    @PatchMapping("/{id}/complete")
+    public TodoResponse completeTodo(@PathVariable Long id) {
+        return todoService.completeTodo(id);
+    }
+
 }
