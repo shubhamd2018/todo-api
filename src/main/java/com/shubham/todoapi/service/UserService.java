@@ -60,11 +60,15 @@ public class UserService {
                 .orElseThrow(() ->
                         new UserNotFoundException(userId));
 
-        List<TodoResponse> response = new ArrayList<>();
-        for (Todo todo : user.getTodos()) {
-            response.add(todoMapper.mapToResponse(todo));
-        }
+//        List<TodoResponse> response = new ArrayList<>();
+//        for (Todo todo : user.getTodos()) {
+//            response.add(todoMapper.mapToResponse(todo));
+//        }
+//        return response;
 
-        return response;
+        return user.getTodos()
+                .stream()
+                .map(todoMapper::mapToResponse)
+                .toList();
     }
 }
