@@ -1,9 +1,12 @@
 package com.shubham.todoapi.service;
 
 import com.shubham.todoapi.dto.request.CreateUserRequest;
+import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.dto.response.UserResponse;
+import com.shubham.todoapi.entity.Todo;
 import com.shubham.todoapi.entity.User;
 import com.shubham.todoapi.exception.UserNotFoundException;
+import com.shubham.todoapi.mapper.TodoMapper;
 import com.shubham.todoapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,11 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final TodoMapper todoMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TodoMapper todoMapper) {
         this.userRepository = userRepository;
+        this.todoMapper = todoMapper;
     }
 
     private UserResponse mapToResponse(User user) {
@@ -48,5 +53,18 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return mapToResponse(user);
+    }
+
+    public List<TodoResponse> getUserTodos(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new UserNotFoundException(userId));
+
+        List<TodoResponse> response = new ArrayList<>();
+        for (Todo todo : user.getTodos()) {
+            response.add(todoMapper.mapToResponse(todo));
+        }
+
+        return response;
     }
 }

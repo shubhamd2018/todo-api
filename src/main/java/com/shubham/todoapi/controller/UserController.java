@@ -1,6 +1,7 @@
 package com.shubham.todoapi.controller;
 
 import com.shubham.todoapi.dto.request.CreateUserRequest;
+import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.dto.response.UserResponse;
 import com.shubham.todoapi.service.UserService;
 import jakarta.validation.Valid;
@@ -30,5 +31,10 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable Long id) {
         return userService.getUser(id);
+    }
+
+    @GetMapping("/{id}/todos")
+    public List<TodoResponse> getUserTodos(@PathVariable Long id) {
+        return userService.getUserTodos(id);
     }
 }

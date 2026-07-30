@@ -7,6 +7,7 @@ import com.shubham.todoapi.entity.Todo;
 import com.shubham.todoapi.entity.User;
 import com.shubham.todoapi.exception.TodoNotFoundException;
 import com.shubham.todoapi.exception.UserNotFoundException;
+import com.shubham.todoapi.mapper.TodoMapper;
 import com.shubham.todoapi.repository.TodoRepository;
 import com.shubham.todoapi.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -24,26 +25,19 @@ public class TodoService {
 
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final TodoMapper todoMapper;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository, TodoMapper todoMapper) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
-    }
-
-    private TodoResponse mapToResponse(Todo todo) {
-        return new TodoResponse(
-                todo.getId(),
-                todo.getTitle(),
-                todo.isCompleted(),
-                todo.getUser().getName()
-        );
+        this.todoMapper = todoMapper;
     }
 
     public List<TodoResponse> getAllTodos() {
         List<Todo> todos = todoRepository.findAllWithUser();
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
-            response.add(mapToResponse(todo));
+            response.add(todoMapper.mapToResponse(todo));
         }
         return response;
     }
@@ -51,7 +45,7 @@ public class TodoService {
     public TodoResponse getTodo(Long id) {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException(id));
-        return mapToResponse(todo);
+        return todoMapper.mapToResponse(todo);
     }
 
     public TodoResponse createTodo(CreateTodoRequest request) {
@@ -64,7 +58,7 @@ public class TodoService {
         todo.setCompleted(false);
         todo.setUser(user);
         Todo savedTodo = todoRepository.save(todo);
-        return mapToResponse(savedTodo);
+        return todoMapper.mapToResponse(savedTodo);
     }
 
     @Transactional
@@ -74,7 +68,7 @@ public class TodoService {
         todo.setTitle(request.getTitle());
         todo.setCompleted(request.isCompleted());
         //Todo updatedTodo = todoRepository.save(todo);
-        return mapToResponse(todo);
+        return todoMapper.mapToResponse(todo);
     }
 
     public void deleteTodo(Long id) {
@@ -88,7 +82,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.findByCompleted(completed);
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
-            response.add(mapToResponse(todo));
+            response.add(todoMapper.mapToResponse(todo));
         }
         return response;
     }
@@ -97,7 +91,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.findByTitleContainingIgnoreCase(title);
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
-            response.add(mapToResponse(todo));
+            response.add(todoMapper.mapToResponse(todo));
         }
         return response;
     }
@@ -106,7 +100,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.searchByTitle(keyword);
         List<TodoResponse> response = new ArrayList<>();
         for (Todo todo : todos) {
-            response.add(mapToResponse(todo));
+            response.add(todoMapper.mapToResponse(todo));
         }
         return response;
     }
@@ -115,7 +109,7 @@ public class TodoService {
         Sort sort = Sort.by(sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Todo> todoPage = todoRepository.findAll(pageable);
-        return todoPage.map(this::mapToResponse);
+        return todoPage.map(todo -> todoMapper.mapToResponse(todo));
     }
 
     @Transactional
@@ -125,6 +119,7 @@ public class TodoService {
                         new TodoNotFoundException(id));
 
         todo.setCompleted(true);
-        return mapToResponse(todo);
+        return todoMapper.mapToResponse(todo);
     }
+
 }
