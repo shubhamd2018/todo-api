@@ -5,6 +5,7 @@ import com.shubham.todoapi.dto.response.TodoResponse;
 import com.shubham.todoapi.dto.response.UserResponse;
 import com.shubham.todoapi.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public class UserController {
     @GetMapping("/{id}/todos")
     public List<TodoResponse> getUserTodos(@PathVariable Long id) {
         return userService.getUserTodos(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

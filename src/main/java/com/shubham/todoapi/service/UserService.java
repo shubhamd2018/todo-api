@@ -71,4 +71,10 @@ public class UserService {
                 .map(todoMapper::mapToResponse)
                 .toList();
     }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        userRepository.delete(user);
+    }
 }

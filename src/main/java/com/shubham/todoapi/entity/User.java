@@ -23,7 +23,7 @@ public class User {
     private String name;
     private String email;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Todo> todos;
 
     public User(String name, String email) {
