@@ -10,10 +10,12 @@ import com.shubham.todoapi.exception.UserNotFoundException;
 import com.shubham.todoapi.mapper.TodoMapper;
 import com.shubham.todoapi.repository.TodoRepository;
 import com.shubham.todoapi.repository.UserRepository;
+import com.shubham.todoapi.specification.TodoSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,13 +124,27 @@ public class TodoService {
         return todoMapper.mapToResponse(todo);
     }
 
-    public List<TodoResponse> getTodosByCompletedDynamically(Boolean completed){
-        List<Todo> todos;
-        if (completed == null) {
-            todos = todoRepository.findAll();
-        } else {
-            todos = todoRepository.findByCompleted(completed);
+    public List<TodoResponse> getTodosDynamically(Boolean completed, Long userId, String title){
+        Specification<Todo> specification = Specification.unrestricted();
+
+        if (completed != null) {
+            specification = specification.and(
+                    TodoSpecification.hasCompleted(completed)
+            );
         }
+        if (userId != null) {
+            specification = specification.and(
+                    TodoSpecification.hasUserId(userId)
+            );
+        }
+        if (title != null) {
+            specification = specification.and(
+                    TodoSpecification.hasTitleContaining(title)
+            );
+        }
+
+        List<Todo> todos = todoRepository.findAll(specification);
+
         return todos.stream()
                 .map(todoMapper::mapToResponse)
                 .toList();

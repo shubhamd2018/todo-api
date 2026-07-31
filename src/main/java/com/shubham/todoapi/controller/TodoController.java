@@ -72,8 +72,11 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<TodoResponse> getTodosByCompletedDynamically(@RequestParam(required = false) Boolean completed) {
-        return todoService.getTodosByCompletedDynamically(completed);
+    public List<TodoResponse> getTodosDynamically(
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String title) {
+        return todoService.getTodosDynamically(completed, userId, title);
     }
 
 }
